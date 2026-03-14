@@ -1,43 +1,140 @@
 // can somone write the general idea of our code here?
 public static void main(String[] args) {
 
-        // Employee 1 Info
+       public static void main(String[] args) {
+
+        double hourlyRate = 150.0;
+        double expectedHours = 8.0;
+
+        // ===============================
+        // Employee 1
+        // ===============================
         String employeeName1 = "Juan Dela Cruz";
-        //logged time in and out
         double timeIn1 = 8.0;
         double timeOut1 = 17.5;
         double breakTime1 = 1.0;
-          //calculations for hours worked  for the day  to meet the minimum
-        double totalHours1 = (timeOut1 - timeIn1) - breakTime1;
-        //for printing  out the results in text for the code to properly display the log times and brakes 
-        System.out.println("Employee Name: " + employeeName1);
-        System.out.println("Total Hours Worked: " + totalHours1);
 
-        // Employee 2 Info
+        double totalHours1 = (timeOut1 - timeIn1) - breakTime1;
+
+        double overtime1 = totalHours1 > expectedHours ? totalHours1 - expectedHours : 0;
+        double regularHours1 = totalHours1 > expectedHours ? expectedHours : totalHours1;
+
+        double grossSalary1 = computeGrossSalary(hourlyRate, regularHours1, overtime1);
+
+        double sss1 = computeSSS(grossSalary1);
+        double philHealth1 = computePhilHealth(grossSalary1);
+        double pagIbig1 = computePagIbig(grossSalary1);
+
+        double taxableIncome1 = grossSalary1 - (sss1 + philHealth1 + pagIbig1);
+        double tax1 = computeTax(taxableIncome1);
+        double netSalary1 = grossSalary1 - (sss1 + philHealth1 + pagIbig1 + tax1);
+
+        // ===============================
+        // Employee 2
+        // ===============================
         String employeeName2 = "Alex Stone Wall";
-        //logged time in and out
         double timeIn2 = 9.0;
         double timeOut2 = 21.0;
         double breakTime2 = 2.0;
-        //calculations for hours worked  for the day  to meet the minimum
-        double totalHours2 = (timeOut2 - timeIn2) - breakTime2;
-        //for printing  out the results in text for the code to properly display the log times and brakes 
-        System.out.println("Employee Name: " + employeeName2);
-        System.out.println("Total Hours Worked: " + totalHours2);
 
-        // Expected working hours
-        double expectedHours = 8.0;
+        double totalHours2 = (timeOut2 - timeIn2) - breakTime2;
+
+        double overtime2 = totalHours2 > expectedHours ? totalHours2 - expectedHours : 0;
+        double regularHours2 = totalHours2 > expectedHours ? expectedHours : totalHours2;
+
+        double grossSalary2 = computeGrossSalary(hourlyRate, regularHours2, overtime2);
+
+        double sss2 = computeSSS(grossSalary2);
+        double philHealth2 = computePhilHealth(grossSalary2);
+        double pagIbig2 = computePagIbig(grossSalary2);
+
+        double taxableIncome2 = grossSalary2 - (sss2 + philHealth2 + pagIbig2);
+        double tax2 = computeTax(taxableIncome2);
+        double netSalary2 = grossSalary2 - (sss2 + philHealth2 + pagIbig2 + tax2);
+
+        // ===============================
+        // OUTPUT
+        // ===============================
+
+        printEmployee(employeeName1, totalHours1, grossSalary1, sss1, philHealth1, pagIbig1, tax1, netSalary1);
+        printEmployee(employeeName2, totalHours2, grossSalary2, sss2, philHealth2, pagIbig2, tax2, netSalary2);
 
         boolean emp1Pass = Math.abs(totalHours1 - expectedHours) < 0.0001;
         boolean emp2Pass = Math.abs(totalHours2 - expectedHours) < 0.0001;
 
-        // Individual results
-        System.out.println("Employee 1: " + (emp1Pass ? "Test passed" : "Test failed"));
-        System.out.println("Employee 2: " + (emp2Pass ? "Test passed" : "Test failed"));
+        System.out.println("Employee 1 Test: " + (emp1Pass ? "Passed" : "Failed"));
+        System.out.println("Employee 2 Test: " + (emp2Pass ? "Passed" : "Failed"));
 
-        // Final result only if both are correct
         if (emp1Pass && emp2Pass) {
             System.out.println("Test passed: Computation is correct");
         }
+    }
+
+    // ===============================
+    // Salary Computation
+    // ===============================
+    public static double computeGrossSalary(double hourlyRate, double hoursWorked, double overtimeHours) {
+        double overtimeRate = hourlyRate * 1.25;
+        return (hoursWorked * hourlyRate) + (overtimeHours * overtimeRate);
+    }
+
+    // ===============================
+    // Statutory Deductions
+    // ===============================
+
+    public static double computeSSS(double grossSalary) {
+        return grossSalary * 0.045; 
+    }
+
+    public static double computePhilHealth(double grossSalary) {
+        return grossSalary * 0.02;
+    }
+
+    public static double computePagIbig(double grossSalary) {
+        return Math.min(grossSalary * 0.02, 100);
+    }
+
+    // ===============================
+    // TRAIN Law Tax Brackets
+    // ===============================
+
+    public static double computeTax(double income) {
+
+        if (income <= 20833) {
+            return 0;
+        } 
+        else if (income <= 33333) {
+            return (income - 20833) * 0.15;
+        } 
+        else if (income <= 66667) {
+            return 1875 + (income - 33333) * 0.20;
+        } 
+        else if (income <= 166667) {
+            return 8541.67 + (income - 66667) * 0.25;
+        } 
+        else if (income <= 666667) {
+            return 33541.67 + (income - 166667) * 0.30;
+        } 
+        else {
+            return 183541.67 + (income - 666667) * 0.35;
+        }
+    }
+
+    // ===============================
+    // Display Function
+    // ===============================
+
+    public static void printEmployee(String name, double hours, double gross,
+                                     double sss, double philHealth,
+                                     double pagIbig, double tax, double net) {
+
+        System.out.println("\nEmployee: " + name);
+        System.out.println("Hours Worked: " + hours);
+        System.out.println("Gross Salary: PHP " + gross);
+        System.out.println("SSS: PHP " + sss);
+        System.out.println("PhilHealth: PHP " + philHealth);
+        System.out.println("Pag-IBIG: PHP " + pagIbig);
+        System.out.println("Withholding Tax: PHP " + tax);
+        System.out.println("Net Salary: PHP " + net);
     }
 }
