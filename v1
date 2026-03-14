@@ -1,1 +1,43 @@
 // can somone write the general idea of our code here?
+public static void main(String[] args) {
+
+        // Employee 1 Info
+        String employeeName1 = "Juan Dela Cruz";
+        //logged time in and out
+        double timeIn1 = 8.0;
+        double timeOut1 = 17.5;
+        double breakTime1 = 1.0;
+          //calculations for hours worked  for the day  to meet the minimum
+        double totalHours1 = (timeOut1 - timeIn1) - breakTime1;
+        //for printing  out the results in text for the code to properly display the log times and brakes 
+        System.out.println("Employee Name: " + employeeName1);
+        System.out.println("Total Hours Worked: " + totalHours1);
+
+        // Employee 2 Info
+        String employeeName2 = "Alex Stone Wall";
+        //logged time in and out
+        double timeIn2 = 9.0;
+        double timeOut2 = 21.0;
+        double breakTime2 = 2.0;
+        //calculations for hours worked  for the day  to meet the minimum
+        double totalHours2 = (timeOut2 - timeIn2) - breakTime2;
+        //for printing  out the results in text for the code to properly display the log times and brakes 
+        System.out.println("Employee Name: " + employeeName2);
+        System.out.println("Total Hours Worked: " + totalHours2);
+
+        // Expected working hours
+        double expectedHours = 8.0;
+
+        boolean emp1Pass = Math.abs(totalHours1 - expectedHours) < 0.0001;
+        boolean emp2Pass = Math.abs(totalHours2 - expectedHours) < 0.0001;
+
+        // Individual results
+        System.out.println("Employee 1: " + (emp1Pass ? "Test passed" : "Test failed"));
+        System.out.println("Employee 2: " + (emp2Pass ? "Test passed" : "Test failed"));
+
+        // Final result only if both are correct
+        if (emp1Pass && emp2Pass) {
+            System.out.println("Test passed: Computation is correct");
+        }
+    }
+}
