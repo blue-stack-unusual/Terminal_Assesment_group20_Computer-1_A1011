@@ -1,43 +1,97 @@
 //Alex Gabriel L Coronia's note "only me and Arwin consistently doing the code we haven't got any messages from our other members at all, and I tried scheduling a group meeting."
-     public static void main(String[] args) {
+   import java.io.*;
+import java.util.*;
 
+public class Payrollfiles {
+
+    public static void main(String[] args) {
         double hourlyRate = 150.0;
         double expectedHours = 8.0;
 
         // ===============================
-        // Employee data: ID, First, Last, TimeIn, TimeOut, Break
+        // Load employee IDs from text file
         // ===============================
-        String[][] employees = {
-                {"1001", "Juan", "Dela Cruz", "8.0", "17.5", "1.0"},
-                {"1002", "Maria", "Santos", "8.0", "17.0", "1.0"},
-                {"1003", "Pedro", "Reyes", "9.0", "18.0", "1.0"},
-                {"1004", "Lily", "Jackson", "8.5", "17.5", "1.0"},
-                {"1005", "Henry", "Shale", "8.0", "16.0", "0.5"},
-                {"1006", "Alex", "Stone Wall", "5.0", "21.0", "2.0"}
-        };
+        List<String> employeeIDs = loadEmployeeIDs("src/main/java/com/mycompany/motorphcode/employee_ids.txt");
 
         // ===============================
-        // Process all employees
+        // Load employee data from TXT (whitespace separated)
         // ===============================
+        Map<String, String[]> employees = loadEmployeesFromTXT("src/main/java/com/mycompany/employees.txt");
+
         boolean allPass = true;
-        for (String[] emp : employees) {
-            String fullName = emp[1] + " " + emp[2];
-            double timeIn = Double.parseDouble(emp[3]);
-            double timeOut = Double.parseDouble(emp[4]);
-            double breakTime = Double.parseDouble(emp[5]);
+        for (String id : employeeIDs) {
+            String[] emp = employees.get(id);
+            if (emp != null) {
+                String fullName = emp[0] + " " + emp[1];
+                double timeIn = Double.parseDouble(emp[2]);
+                double timeOut = Double.parseDouble(emp[3]);
+                double breakTime = Double.parseDouble(emp[4]);
 
-            boolean passed = processEmployee(fullName, timeIn, timeOut, breakTime, hourlyRate, expectedHours);
-            if (!passed) allPass = false;
+                boolean passed = processEmployee(fullName, timeIn, timeOut, breakTime,
+                                                 hourlyRate, expectedHours);
+                if (!passed) allPass = false;
+            } else {
+                System.out.println("\nEmployee ID " + id + " not found in TXT file.");
+                allPass = false;
+            }
         }
 
-        // ===============================
-        // Overall test result
-        // ===============================
         if (allPass) {
             System.out.println("\nAll employees processed successfully. Test passed.");
         } else {
             System.out.println("\nSome employees failed the computation check.");
         }
+    }
+
+    // ===============================
+    // Load IDs from TXT file
+    // ===============================
+    public static List<String> loadEmployeeIDs(String filePath) {
+        List<String> ids = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(","); // split by comma
+                if (parts.length > 0) {
+                    ids.add(parts[0].trim()); // only take the ID
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
+    // ===============================
+    // Load employees from TXT (whitespace separated)
+    // ===============================
+    public static Map<String, String[]> loadEmployeesFromTXT(String filePath) {
+        Map<String, String[]> employees = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (firstLine) { // skip header
+                    firstLine = false;
+                    continue;
+                }
+                // Split by one or more spaces/tabs
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length >= 6) {
+                    String id = parts[0].trim();
+                    String first = parts[1].trim();
+                    String last = parts[2].trim();
+                    String timeIn = parts[3].trim();
+                    String timeOut = parts[4].trim();
+                    String breakTime = parts[5].trim();
+
+                    employees.put(id, new String[]{first, last, timeIn, timeOut, breakTime});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return employees;
     }
 
     // ===============================
